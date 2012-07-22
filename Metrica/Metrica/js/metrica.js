@@ -354,7 +354,7 @@
         _readLineAsync: function () {
             this._connection.readLineAsync().then(function (line) {
                 this.dispatchEvent('messagelinereceived', { line: line });
-                console.log(line);
+                //console.log(line);
                 this._readLineAsync();
             }.bind(this));
         },
