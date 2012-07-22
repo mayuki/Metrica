@@ -226,6 +226,7 @@
                     // unobserve
                     if (this._currentChannelLog) {
                         this._currentChannelLog.oniteminserted = null;
+                        this._currentChannelLog.onitemremoved = null;
                     }
 
                     // title

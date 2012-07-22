@@ -604,12 +604,12 @@
             return member;
         },
 
-        getChannel: function (channelName) {
+        getChannel: function (channelName, fetchOnly) {
             /// <summary>チャンネルを取得します。</summary>
             /// <returns type="Metrica.Data.Channel" />
             var channelNameLower = channelName.toLowerCase();
             var channel = this._channels.filter(function (c) { return c.name.toLowerCase() == channelNameLower; })[0];
-            if (channel == null) {
+            if (!fetchOnly && channel == null) {
                 channel = new Metrica.Data.Channel(channelName);
                 this._channels.push(channel);
             }
@@ -695,13 +695,10 @@
             this.sendMessage(new Metrica.Net.IrcMessage("PONG", [args.detail.commandParams[0]])); // [serverName]
         },
         _onReceiveChannelMessage: function (args) {
-            var channel;
-            if (args.detail.isServerMessage && !args.detail.senderHost) {
+            var channel = this.getChannel(args.detail.commandParams[0], true);
+            if (channel == null) {
                 // :irc.example.com NOTICE * ....
                 channel = this._serverChannel;
-            } else {
-                // nick!user@irc.example.com NOTICE #channel ....
-                channel = this.getChannel(args.detail.commandParams[0]);
             }
             this._appendToChannelLog(channel, args.detail);
         },
