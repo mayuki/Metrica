@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html>e
+    <head>
+        <title>Connection Setting Flyout</title>
+
+    </head>
+    <body>
+        <div data-win-control="WinJS.UI.SettingsFlyout"
+             class="setting-connections"
+             aria-label="Settings flyout"
+             data-win-options="{
+                                settingsCommandId:'Connections',
+                                width:'narrow',
+                                onbeforeshow:Metrica.UI.Page.ConnectionSetting.onBeforeShowHandler,
+                                onaftershow:Metrica.UI.Page.ConnectionSetting.onAfterShowHandler
+                               }">
+            <div class="win-ui-dark win-header">
+               <button type="button" onclick="WinJS.UI.SettingsFlyout.show()" class="win-backbutton"></button>
+               <div class="win-label">Server Setting</div>
+            </div>                
+            <div class="win-content">
+                <div id="settingTemplate" data-win-control="WinJS.Binding.Template">
+                    <!-- TODO: label element (input の id は自動で決定される) -->
+                    <div class="win-settings-section">
+                        <h3><label for="settingServerAddress">Host</label></h3>
+                        <div><input data-win-bind="value: serverAddress" type="text" pattern="[a-zA-Z0-9-.]+" class="settingServerAddress" placeholder="irc.example.com" required value="" /></div>
+                        <h3><label for="settingNick">Nickname</label></h3>
+                        <div><input data-win-bind="value: nick" type="text" pattern="[a-zA-Z0-9^_-]+" class="settingNick" placeholder="Nickname" required></div>
+                    </div>
+                    <div class="win-settings-section">
+                        <h3><label for="settingServerPort">Port</label></h3>
+                        <div><input data-win-bind="value: port" type="number" class="settingServerPort" placeholder="6667" required min="1" max="35535"></div>
+                        <h3><label for="settingServerEncoding">Encoding</label></h3>
+                        <div><select id="settingServerEncoding"></select></div>
+                        <h3><label for="settingServerPassword">Password</label></h3>
+                        <div><input data-win-bind="value: password" type="password" class="settingServerPassword" placeholder="Password"></div>
+                        <h3><label for="settingUser">User</label></h3>
+                        <div><input data-win-bind="value: username" type="text" pattern="[a-zA-Z0-9^_-]+" class="settingUser" placeholder="User"></div>
+                        <h3><label for="settingRealname">Realname</label></h3>
+                        <div><input data-win-bind="value: realname" type="text" class="settingRealname" placeholder="Kyoko Toshino"></div>
+                    </div>
+                    <div class="win-settings-section">
+                        <h3><label for="settingChannels">Join Channels</label></h3>
+                        <select size="5" id="settingChannels">
+                            <option>#Channel1</option>
+                        </select>
+                        <div><button id="buttonSettingChannelsRemove">Remove</button></div>
+                        <div><input type="text" id="settingJoinChannelNameInput" placeholder="#ChannelName" required /> <button id="buttonSettingChannelsAdd">Add</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            WinJS.Namespace.define('Metrica.UI.Page.ConnectionSetting', {
+                onBeforeShowHandler: function (event) {
+                    // setting
+                    var account = Metrica.Setting.Accounts.getByName('Default');
+                    if (account == null) {
+                        account = Metrica.Setting.Accounts.createAccount('Default');
+                    }
+
+                    var template = document.getElementById('settingTemplate').winControl;
+                    template.render(account).then(function (element) {
+                        document.querySelector('.win-content').appendChild(element);
+                    });
+
+                    // encodings
+                    var encodingSelect = document.getElementById('settingServerEncoding');
+                    WinJS.Utilities.empty(encodingSelect);
+                    Metrica.Utilities.supportedEncodings.forEach(function (encoding) {
+                        var encodingOption = document.createElement('option');
+                        encodingOption.value = encoding;
+                        encodingOption.textContent = encoding;
+                        encodingOption.selected = (encoding.toLowerCase() == account.encoding.toLowerCase());
+                        encodingSelect.appendChild(encodingOption);
+                    });
+
+                    // channels
+                    var channelsList = document.getElementById('settingChannels');
+                    WinJS.Utilities.empty(channelsList);
+                    account.joinChannelsOnConnect.forEach(function (channel) {
+                        var option = document.createElement('option');
+                        option.value = channel;
+                        option.textContent = channel;
+                        channelsList.appendChild(option);
+                    });
+                    document.getElementById('buttonSettingChannelsRemove').addEventListener('click', function (e) {
+                        // [Remove] remove item from list
+                        if (channelsList.selectedIndex > -1) {
+                            channelsList.removeChild(channelsList.getElementsByTagName('option')[channelsList.selectedIndex]);
+                        }
+                        account.joinChannelsOnConnect = Array.prototype.map.call(channelsList.getElementsByTagName('option'), function (option) { return option.value; });
+                        account.save();
+                    });
+                    document.getElementById('buttonSettingChannelsAdd').addEventListener('click', function (e) {
+                        // [Add] add item to list
+                        var inputE = document.getElementById('settingJoinChannelNameInput');
+                        if (inputE.checkValidity() && inputE.value.replace(/^\s*|\s*$/) != '') {
+                            var option = document.createElement('option');
+                            option.value = inputE.value;
+                            option.textContent = inputE.value;
+                            channelsList.appendChild(option);
+
+                            account.joinChannelsOnConnect = Array.prototype.map.call(channelsList.getElementsByTagName('option'), function (option) { return option.value; });
+                            account.save();
+                        }
+                    });
+
+                    // bind to event
+                    function bindInput(query, propertyName) {
+                        WinJS.Utilities.query(query)
+                                       .listen('change', function (e) {
+                                           account[propertyName] = e.target.value;
+                                           account.save();
+                                       });
+                    }
+                    bindInput('.settingServerAddress', 'serverAddress');
+                    bindInput('.settingNick', 'nick');
+                    bindInput('.settingServerPort', 'port');
+                    bindInput('.settingServerPassword', 'password');
+                    bindInput('.settingUser', 'user');
+                    bindInput('.settingRealname', 'realname');
+                    bindInput('#settingServerEncoding', 'encoding');
+
+                }
+                , onAfterShowHandler: function (event) {
+                }
+            });
+            Metrica.UI.Page.ConnectionSetting.onBeforeShowHandler.supportedForProcessing = true;
+            Metrica.UI.Page.ConnectionSetting.onAfterShowHandler.supportedForProcessing = true;
+        </script>
+    </body>
+</html>

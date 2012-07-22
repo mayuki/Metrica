@@ -1,0 +1,192 @@
+﻿.homepage #panelsContainer {
+    width: 100%;
+    height: 100%;
+    display: -ms-grid;
+    -ms-grid-columns: 360px 80px 439fr 40px;
+    -ms-grid-rows: 1fr;
+}
+
+.homepage header[role="banner"] .chevron {
+    display: none;
+}
+
+.homepage #channelsPanel {
+    -ms-grid-column: 1;
+}
+.homepage #channelsPanel h2 {
+    padding-left: 120px;
+}
+.homepage #channelsPanel #channels {
+    height: calc(100% - 70px);
+}
+.homepage #channelsPanel #channels .win-container {
+    margin-left: 0;
+    margin-right: 0;
+}
+.homepage #channelsPanel #channels .win-container:hover {
+    outline-style: none;
+}
+.homepage #channelsPanel #channels .win-selectionbackground {
+    background-color: #c0c0c0;
+}
+.homepage #channelsPanel #channels .win-selectionborder {
+    border-color: #c0c0c0;
+}
+.homepage #channelsPanel #channels .win-selectioncheckmark {
+    display: none;
+}
+.homepage #channelsPanel #channels .win-selectioncheckmarkbackground {
+    display: none;
+}
+
+.homepage #channelsPanel #channels .listViewItemChannel {
+    padding: 0.5em;
+    padding-left: 120px;
+    display: -ms-grid;
+    -ms-grid-columns: 178fr 40px 5px;
+}
+.homepage #channelsPanel #channels .has-unread .listViewItemChannel {
+    font-weight: bold;
+}
+.homepage #channelsPanel #channels .is-selected .listViewItemChannel {
+    background-color: rgb(46, 117, 182);
+    color: #fff;
+}
+.homepage #channelsPanel #channels .listViewItemChannel .channel-unread-count {
+    -ms-grid-column: 2;
+    display: block;
+}
+.homepage #channelLogPanel {
+    -ms-grid-column: 3;
+    
+    display: -ms-grid;
+    -ms-grid-columns: 1fr;
+    -ms-grid-rows: 115fr 20px 13fr;
+    width: 100%;
+    height: 100%;
+}
+.homepage #channelLogPanel #channelLogViewArea h2 {
+    -ms-text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.homepage #channelLogPanel #channelLogViewArea {
+    display: -ms-grid;
+    -ms-grid-rows: 40px 1fr;
+    -ms-grid-columns: 1fr;
+}
+.homepage #channelLogPanel #channelLogViewArea h2 {
+    -ms-grid-row: 1;
+}
+.homepage #channelLogPanel #channelLogViewArea #channelLog {
+    -ms-grid-row: 2;
+    height: 100%;
+    width: 100%;
+    overflow-y: scroll;
+    -ms-word-break: break-all;
+}
+.homepage #channelLogPanel #channelLogViewArea #channelLog img {
+    max-width: 120px;
+    height: 120px;
+    vertical-align: top;
+}
+.homepage #channelLogPanel .win-container:nth-child(2n)  .listViewItemChannelLog {
+    height: 1em;
+    background-color: #fff0f0;
+}
+
+.homepage #channelLogPanel #channelLogInputArea {
+    -ms-grid-row: 3;
+}
+
+.homepage #channelLogPanel #channelLogInputArea #channelInput {
+    width: 100%;
+}
+
+.homepage .channelLogView {
+}
+.homepage .channelLogView .channelLogViewLine {
+    display: -ms-grid;
+    -ms-grid-columns: 40px 20px 95px 20px auto;
+    margin-bottom: 5px;
+}
+.homepage .channelLogView .message-type-NOTICE .channelLogViewLine {
+    color: #7ba48f;
+}
+.homepage .channelLogView .channelLogViewLine .time {
+    display: block;
+    -ms-grid-column: 1;
+    color: #c0c0c0;
+}
+.homepage .channelLogView .channelLogViewLine .nickname {
+    display: block;
+    -ms-grid-column: 3;
+}
+.homepage .channelLogView .channelLogViewLine .message {
+    display: block;
+    -ms-grid-column: 5;
+}
+
+@media screen and (-ms-view-state: snapped) {
+    .homepage section[role=main] {
+    }
+}
+
+@media screen and (-ms-view-state: portrait) {
+    .homepage section[role=main] {
+        margin-left: 100px;
+    }
+}
+
+/*
+ * Snapped View State
+ */
+@media screen and (-ms-view-state: snapped) {
+    .homepage header[role="banner"] .chevron {
+        display: inline;
+    }
+    .homepage #panelsContainer {
+        display: block;
+    }
+    .homepage #channelsPanel {
+        display: none;
+    }
+    .homepage #channelLogPanel {
+        width: calc(100% - 40px);
+        padding-left: 20px;
+    }
+    .homepage .channelLogView .channelLogViewLine {
+        display: block;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 0.25em;
+    }
+
+    .homepage .channelLogView .channelLogViewLine .time {
+        display: inline;
+    }
+    .homepage .channelLogView .channelLogViewLine .nickname {
+        display: inline;
+    }
+}
+
+/*
+ * SettingsFlyout
+ */
+.channel-members .win-settings-section #members {
+    overflow: visible;
+}
+.channel-members .win-settings-section #members .win-viewport {
+    overflow-y: visible;
+}
+.channel-members .win-settings-section #members .win-selectioncheckmarkbackground {
+    display: none;
+}
+
+.setting-connections {
+}
+.setting-connections input:invalid {
+    outline-style: solid;
+}
+.setting-connections #settingChannels {
+    width: 100%;
+}

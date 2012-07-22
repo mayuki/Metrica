@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>e
+    <head>
+        <title>Channel Members Flyout</title>
+
+    </head>
+    <body>
+        <div data-win-control="WinJS.UI.SettingsFlyout"
+             class="channel-members"
+             aria-label="Channel Members flyout"
+             data-win-options="{
+                                settingsCommandId:'defaults',
+                                width:'narrow',
+                                onbeforeshow:Metrica.UI.Pages.ChannelMembers.onBeforeShowHandler,
+                                onaftershow:Metrica.UI.Pages.ChannelMembers.onAfterShowHandler
+                               }">
+            <div class="win-ui-dark win-header">
+               <button type="button" onclick="Metrica.UI.Pages.ChannelMembers.flyout.hide()" class="win-backbutton"></button>
+               <div class="win-label">Members</div>
+            </div>                
+            <div class="win-content">
+                <div class="win-settings-section">
+                    <div id="members" data-win-control="WinJS.UI.ListView" data-win-options="{ selectionMode: 'none', layout:WinJS.UI.ListLayout }"></div>
+                    <div id="templateMembersListViewItem" data-win-control="WinJS.Binding.Template">
+                        <div class="membersListViewItem">
+                            &#xE13D; <span class="member-nick" data-win-bind="textContent: nick">Nickname</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            WinJS.Namespace.define('Metrica.UI.Pages.ChannelMembers', {
+                  flyout: null
+                , onBeforeShowHandler: function (event) {
+                    Metrica.UI.Pages.ChannelMembers.flyout = this.winControl;
+
+                    var homeFragment = document.querySelector('.fragment').parentElement.winControl;
+                    var membersListView = document.querySelector('#members').winControl;
+                    if (window.intellisense) membersListView = new WinJS.UI.ListView();
+                    membersListView.layout = new WinJS.UI.ListLayout();
+                    membersListView.itemDataSource = homeFragment._currentChannel.members.dataSource;
+                    membersListView.itemTemplate = document.querySelector('#templateMembersListViewItem');
+                }
+                , onAfterShowHandler: function (event) {
+                }
+            });
+            Metrica.UI.Pages.ChannelMembers.onBeforeShowHandler.supportedForProcessing = true;
+            Metrica.UI.Pages.ChannelMembers.onAfterShowHandler.supportedForProcessing = true;
+        </script>
+    </body>
+</html>
