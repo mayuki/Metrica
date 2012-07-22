@@ -140,7 +140,9 @@
             this._session.connection
                          .connectAsync()
                          .then(function () { this.onConnected(); }.bind(this),
-                               function () { console.log('ERROR'); });
+                               function (error) {
+                                   new Windows.UI.Popups.MessageDialog("Connection failed. (" + error.message.replace(/\r\n/g, '') + ")").showAsync().done();
+                               }.bind(this));
         },
 
         updateLayout: function (element, viewState, prevViewState) {
@@ -206,7 +208,7 @@
             this._appBar.getCommandById('cmdPart').disabled = !(isConnected && selectedChannel && !selectedChannel.isSpecial);
             this._appBar.getCommandById('cmdShowMembers').disabled = !(isConnected && selectedChannel && !selectedChannel.isSpecial);
             // global commands
-            this._appBar.getCommandById('cmdJoin').disabled = !(isConnected);
+            this._appBar.getCommandById('cmdJoinNew').disabled = !(isConnected);
         },
 
         onChannelTopicChanged: function (newTopic, oldTopic) {

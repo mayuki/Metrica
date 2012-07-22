@@ -2,7 +2,7 @@
     width: 100%;
     height: 100%;
     display: -ms-grid;
-    -ms-grid-columns: 360px 80px 439fr 40px;
+    -ms-grid-columns: 360px 80px 1fr 40px;
     -ms-grid-rows: 1fr;
 }
 
@@ -43,9 +43,12 @@
 
 .homepage #channelsPanel #channels .listViewItemChannel {
     padding: 0.5em;
-    padding-left: 120px;
+    padding-left: 140px;
     display: -ms-grid;
     -ms-grid-columns: 178fr 40px 5px;
+}
+.homepage #channelsPanel #channels .is-special .listViewItemChannel {
+    padding-left: 120px;
 }
 .homepage #channelsPanel #channels .has-unread .listViewItemChannel {
     font-weight: bold;
@@ -53,6 +56,13 @@
 .homepage #channelsPanel #channels .is-selected .listViewItemChannel {
     background-color: rgb(46, 117, 182);
     color: #fff;
+}
+.homepage #channelsPanel #channels .listViewItemChannel .channel-name {
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    -ms-grid-column: 1;
+    display: block;
+    overflow: hidden;
 }
 .homepage #channelsPanel #channels .listViewItemChannel .channel-unread-count {
     -ms-grid-column: 2;

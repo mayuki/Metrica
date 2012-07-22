@@ -28,12 +28,12 @@
 
                 Metrica.Data.Dummy.channels.getAt(0).unreadCount = 10;
                 Metrica.Data.Dummy.channels.getAt(0).isSelected = true;
-                return;
+                //return;
                 var c = 0;
                 setInterval(function () {
                     c++;
                     Metrica.Data.Dummy.channels.forEach(function (channel, i) {
-                        channel.isSelected = ((c - i) % 2 == 0);
+                        channel.isSelected = ((c - i) % Metrica.Data.Dummy.channels.length == 0);
                         channel.unreadCount++;
                     });
                 }, 1000);
@@ -118,7 +118,7 @@
             <button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{section:'selection', icon:'remove', id:'cmdPart', label:'Part', disabled:true, type:'flyout', flyout:'flyoutPartChannel'}"></button>
             <button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{section:'selection', icon:'people', id:'cmdShowMembers', label:'Members', disabled:true}"></button>
             <!-- global -->
-            <button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{section:'global', icon:'add', id:'cmdJoin', label:'Join', disabled:true, type:'flyout', flyout:'flyoutJoinChannel'}"></button>
+            <button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{section:'global', icon:'add', id:'cmdJoinNew', label:'Join New', disabled:true, type:'flyout', flyout:'flyoutJoinChannel'}"></button>
             <button data-win-control="WinJS.UI.AppBarCommand" data-win-options="{section:'global', icon:'remote', id:'cmdConnect', label:'Connect'}"></button>
         </div>
 

@@ -242,13 +242,14 @@
         that.bind('unreadCount', function () {
             that.notify('hasUnread');
         });
-        ['unreadCount', 'isSelected', 'isContainsKeyword', 'isJoined'].forEach(function (type) {
+        ['unreadCount', 'isSelected', 'isContainsKeyword', 'isJoined', 'isSpecial'].forEach(function (type) {
             that.bind(type, function () {
                 var className = [];
                 if (that.hasUnread) className.push('has-unread');
                 if (that.isSelected) className.push('is-selected');
                 if (that.isContainsKeyword) className.push('is-contains-keyword');
                 if (that.isJoined) className.push('is-joined');
+                if (that.isSpecial) className.push('is-special');
                 that.htmlClassName = className.join(' ');
             });
         });
@@ -311,7 +312,7 @@
     });
     WinJS.Class.mix(Metrica_Data_Channel,
         WinJS.Binding.mixin,
-        WinJS.Binding.expandProperties({ name: '', unreadCount: 0, isSelected: false, isJoined: false, isContainsKeyword: false, topic: '', htmlClassName: '' })
+        WinJS.Binding.expandProperties({ name: '', unreadCount: 0, isSelected: false, isJoined: false, isSpecial: false, isContainsKeyword: false, topic: '', htmlClassName: '' })
     );
 
     var Metrica_Data_Member = WinJS.Class.define(function (nick, isOperator) {
