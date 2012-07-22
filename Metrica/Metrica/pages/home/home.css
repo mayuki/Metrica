@@ -9,7 +9,9 @@
 .homepage header[role="banner"] .chevron {
     display: none;
 }
-
+.homepage .win-appbar {
+    background-color: rgb(46, 117, 182);
+}
 .homepage #channelsPanel {
     -ms-grid-column: 1;
 }
