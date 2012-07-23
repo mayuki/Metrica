@@ -107,6 +107,13 @@
             }
         },
 
+        toPlainObject: function () {
+            return {
+                keyword: this._keyword,
+                useRegex: this._useRegex
+            }
+        },
+
         _updateMatcher: function () {
             /// <summary>matcherを更新します。</summary>
             this._matcher = new RegExp(
@@ -117,17 +124,26 @@
     });
 
     var Metrica_Setting_Keywords = WinJS.Class.define(function () { }, {}, {
-        _keywords: [ new Metrica_Setting_Keyword("mayuki") ],
+        _keywords: [ ],
 
         load: function () {
             /// <summary>設定を読み込みます。</summary>
             var rootContainer = Windows.Storage.ApplicationData.current.localSettings;
             var container = rootContainer.createContainer('Keywords', Windows.Storage.ApplicationDataCreateDisposition.always);
-
+            this._keywords = [];
+            try {
+                JSON.parse(container.values.lookup('entries') || '[]').forEach(function (entry) {
+                    this._keywords.push(new Metrica.Setting.Keyword(entry.keyword, entry.useRegex));
+                }.bind(this));
+            } catch (e) { /* TODO: logging */ }
         },
 
         save: function () {
             /// <summary>設定を保存します。</summary>
+            var rootContainer = Windows.Storage.ApplicationData.current.localSettings;
+            var container = rootContainer.createContainer('Keywords', Windows.Storage.ApplicationDataCreateDisposition.always);
+            container.values['entries'] = JSON.stringify(this._keywords.map(function (keyword) { return keyword.toPlainObject(); }));
+            Windows.Storage.ApplicationData.current.signalDataChanged();
         },
 
         add: function (keyword) {
@@ -140,7 +156,7 @@
         remove: function (targetKeyword) {
             /// <summary>キーワード設定を削除します。</summary>
             /// <param name="targetKeyword" type="Metrica.Setting.Keyword">削除するキーワード設定</param>
-            this._keywords = this._keywords.filter(function (keyword) { return keyword.toString() != targetKeyword.toString() });
+            this._keywords = this._keywords.filter(function (keyword) { return !(keyword.toString() == targetKeyword.toString() && keyword.useRegex == targetKeyword.useRegex); });
             this.save();
         },
 
@@ -155,7 +171,7 @@
             /// <param name="text" type="String">マッチするかテストする対象のテキスト。</param>
             /// <returns type="Boolean" />
 
-            return this._keywords.some(function (keyword) { return keyword.matcher.test(); });
+            return this._keywords.some(function (keyword) { return keyword.matcher.test(text); });
         }
     });
 
