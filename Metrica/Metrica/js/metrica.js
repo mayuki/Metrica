@@ -101,7 +101,7 @@
                 this._matcher = new RegExp(value, 'i');
             } else {
                 this._keyword = value;
-                this._matcher = new RegExp(value.replace(/([/.*+?|()\[\]{}\\])/g, "\\$1"), 'i');
+                this._matcher = new RegExp(value.replace(/([/.*+?|()\[\]{}\\^$])/g, "\\$1"), 'i');
             }
         }
     });
