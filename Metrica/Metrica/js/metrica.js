@@ -8,6 +8,18 @@
             get: function () { return ['UTF-8', 'ISO-2022-JP', 'US-ASCII']; }
         },
 
+        forEachWinRTObject: function (enumerableObject, predicate) {
+            /// <summary>WinRT オブジェクトのIEnumerableなどを手繰ります。</summary>
+            /// <param name="enumerableObject" type="IEnumerable">IEnumerableを実装するオブジェクト。</param>
+            /// <param name="predicate" type="Function">アイテムごとに行う処理。</param>
+            var iter = enumerableObject.first();
+            var i = 0;
+            while (iter.hasCurrent) {
+                predicate(iter.current, i++);
+                iter.moveNext();
+            }
+        },
+
         classify: function (name) {
             /// <summary>クラス名の形に変換する。(hoge -> Hoge, HAUHAU -> Hauhau)</summary>
             /// <param name="name" type="String">変換する名前</param>
@@ -70,8 +82,8 @@
         /// <summary>キーワードを扱うクラスです。</summary>
         this._matcher = null;
 
-        this._useRegex = useRegex;
         this._keyword = keyword;
+        this._useRegex = !!useRegex;
         this._updateMatcher();
     }, {
         /// <field name="useRegex" type="Boolean">正規表現を利用するかどうかを取得・設定します。</field>
@@ -96,13 +108,54 @@
         },
 
         _updateMatcher: function () {
-            if (this.useRegex) {
-                this._keyword = value;
-                this._matcher = new RegExp(value, 'i');
-            } else {
-                this._keyword = value;
-                this._matcher = new RegExp(value.replace(/([/.*+?|()\[\]{}\\^$])/g, "\\$1"), 'i');
-            }
+            /// <summary>matcherを更新します。</summary>
+            this._matcher = new RegExp(
+                ((this.useRegex) ? this._keyword
+                                 : this._keyword.replace(/([/.*+?|()\[\]{}\\^$])/g, "\\$1"))
+            , 'i');
+        }
+    });
+
+    var Metrica_Setting_Keywords = WinJS.Class.define(function () { }, {}, {
+        _keywords: [ new Metrica_Setting_Keyword("mayuki") ],
+
+        load: function () {
+            /// <summary>設定を読み込みます。</summary>
+            var rootContainer = Windows.Storage.ApplicationData.current.localSettings;
+            var container = rootContainer.createContainer('Keywords', Windows.Storage.ApplicationDataCreateDisposition.always);
+
+        },
+
+        save: function () {
+            /// <summary>設定を保存します。</summary>
+        },
+
+        add: function (keyword) {
+            /// <summary>キーワード設定を追加します。</summary>
+            /// <param name="keyword" type="Metrica.Setting.Keyword">キーワード設定</param>
+            this._keywords.push(keyword);
+            this.save();
+        },
+
+        remove: function (targetKeyword) {
+            /// <summary>キーワード設定を削除します。</summary>
+            /// <param name="targetKeyword" type="Metrica.Setting.Keyword">削除するキーワード設定</param>
+            this._keywords = this._keywords.filter(function (keyword) { return keyword.toString() != targetKeyword.toString() });
+            this.save();
+        },
+
+        getAll: function () {
+            /// <summary>すべてのキーワードを取得します。</summary>
+            /// <returns type="Array" />
+            return this._keywords;
+        },
+
+        isMatch: function (text) {
+            /// <summary>キーワードのいずれかにマッチするかどうかを返します。</summary>
+            /// <param name="text" type="String">マッチするかテストする対象のテキスト。</param>
+            /// <returns type="Boolean" />
+
+            return this._keywords.some(function (keyword) { return keyword.matcher.test(); });
         }
     });
 
@@ -194,10 +247,9 @@
         },
         _reload: function () {
             var container = this._prepareContainer();
-            var iter = container.values.first();
 
-            while (iter.hasCurrent) {
-                var accountData = iter.current.value;
+            Metrica.Utilities.forEachWinRTObject(container.values, function (keyValue) {
+                var accountData = keyValue.value;
                 var id = JSON.parse(accountData.id || 'null');
                 var account = this.getById(id);
                 if (!account) {
@@ -206,9 +258,7 @@
                     this._accounts.push(account);
                 }
                 account.load();
-                iter.moveNext();
-            }
-
+            }.bind(this));
         },
 
         asBindingList: function () {
@@ -263,10 +313,14 @@
     WinJS.Namespace.define("Metrica.Setting", {
         Account: Metrica_Setting_Account,
         Accounts: Metrica_Setting_Accounts,
-        Keyword: Metrica_Setting_Keyword
+        Keyword: Metrica_Setting_Keyword,
+        Keywords: Metrica_Setting_Keywords
     });
     WinJS.Namespace.define("Metrica.Setting.Accounts", Metrica_Setting_Accounts);
-    WinJS.Utilities.ready(function () { Metrica.Setting.Accounts._reload(); });
+    WinJS.Utilities.ready(function () {
+        Metrica.Setting.Accounts._reload();
+        Metrica.Setting.Keywords.load();
+    });
 
 
     /* ---------- Namespace: Metrica.Data ---------- */
