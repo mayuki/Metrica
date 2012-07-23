@@ -105,15 +105,19 @@
             }.bind(this));
 
             document.querySelector('#buttonJoin').addEventListener('click', function () {
-                this._session.sendMessage(new Metrica.Net.IrcMessage("JOIN", [document.querySelector('#joinChannelNameInput').value]));
+                var input = document.querySelector('#joinChannelNameInput');
+                this._session.sendMessage(new Metrica.Net.IrcMessage("JOIN", [input.value]));
+                input.value = "";
                 hideAppBarAndFlyouts();
             }.bind(this));
             document.querySelector('#buttonPart').addEventListener('click', function () {
-                this._session.sendMessage(new Metrica.Net.IrcMessage("PART", [this._currentChannel.name, document.querySelector('#partCommentInput').value]));
+                var input = document.querySelector('#partCommentInput');
+                this._session.sendMessage(new Metrica.Net.IrcMessage("PART", [this._currentChannel.name, input.value]));
+                input.value = "";
                 hideAppBarAndFlyouts();
             }.bind(this));
             document.querySelector('#buttonSetTopic').addEventListener('click', function () {
-                this._session.sendMessage(new Metrica.Net.IrcMessage("TOPIC", [this._currentChannel.name, document.querySelector('#channelTopicInput').value]));
+                this._session.sendMessage(new Metrica.Net.IrcMessage("TOPIC", [this._currentChannel.name, input.value]));
                 hideAppBarAndFlyouts();
             }.bind(this));
         },
