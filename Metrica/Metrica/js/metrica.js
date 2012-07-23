@@ -688,6 +688,10 @@
         this.addEventListener('receivePart', this._onReceivePart.bind(this));
         this.addEventListener('receivePrivmsg', this._onReceiveChannelMessage.bind(this));
         this.addEventListener('receiveNotice', this._onReceiveChannelMessage.bind(this));
+
+        // extension
+        new Metrica.Extension.ToastNotification(this);
+
     }, {
         // instance members
         /// <field name="connection" type="Metrica.Net.Connection">接続を取得します。</field>
@@ -909,4 +913,52 @@
     }, {
         supportedForProcessing: true
     });
+
+
+    /* ---------- Namespace: Metrica.Extension ---------- */
+    var Metrica_Extension_ToastNotification = WinJS.Class.define(function (session) {
+        /// <summary>トースト通知をするクラス</summary>
+        /// <param name="session" type="Metrica.Net.Session">セッション</param>
+
+        this._session = session;
+        this._session.addEventListener('receivePrivmsg', this._onReceivePrivmsg.bind(this));
+    }, {
+        // instance members
+        dispose: function () {
+            /// <summary>処理を行うのをやめて状態を破棄します。</summary>
+            this._session.removeEventListener('receivePrivmsg', this._onReceivePrivmsg.bind(this));
+            this._session = null;
+        },
+        _onReceivePrivmsg: function (args) {
+            var channel = this._session.getChannel(args.detail.commandParams[0], true);
+            var message = args.detail.commandParams[1].replace(/\u0003\d+(,\d+)?/, '');
+
+            // キーワードチェック
+            if (Metrica.Setting.Keywords.isMatch(message)) {
+                Metrica.Extension.ToastNotification.notify((channel ? channel.name + ": " : '') + args.detail.senderNick, message);
+            }
+        }
+    }, {
+        // static members
+        notify: function (title, body) {
+            // Toast Notification
+            var notificationManager = Windows.UI.Notifications.ToastNotificationManager;
+            var toastTemplate = Windows.UI.Notifications.ToastTemplateType.toastText02;
+            var toastXml = notificationManager.getTemplateContent(toastTemplate);
+
+            toastXml.getElementsByTagName('text')[0].appendChild(toastXml.createTextNode(title));
+            toastXml.getElementsByTagName('text')[1].appendChild(toastXml.createTextNode(body));
+
+            //var audioE = toastXml.createElement('audio');
+            //audioE.setAttribute('src', 'ms-winsoundevent:Notification.IM');
+            //toastXml.documentElement.appendChild(audioE);
+
+            var toast = new Windows.UI.Notifications.ToastNotification(toastXml);
+            notificationManager.createToastNotifier().show(toast);
+        }
+    });
+    WinJS.Namespace.define('Metrica.Extension', {
+        ToastNotification: Metrica_Extension_ToastNotification
+    });
+
 })();
