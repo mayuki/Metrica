@@ -15,9 +15,9 @@
   </Resources>
   <Applications>
     <Application Id="App" StartPage="default.html">
-      <VisualElements DisplayName="Metrica" Logo="images\logo.png" SmallLogo="images\smalllogo.png" Description="Metrica" ForegroundText="light" BackgroundColor="#464646" ToastCapable="true">
+      <VisualElements DisplayName="Metrica" Logo="images\logo.png" SmallLogo="images\smalllogo.png" Description="Metrica" ForegroundText="light" BackgroundColor="#2e75b6" ToastCapable="true">
         <DefaultTile ShowName="allLogos" />
-        <SplashScreen Image="images\splashscreen.png" />
+        <SplashScreen Image="images\splashscreen.png" BackgroundColor="#2e75b6" />
       </VisualElements>
     </Application>
   </Applications>
