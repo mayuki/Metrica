@@ -117,7 +117,7 @@
                 hideAppBarAndFlyouts();
             }.bind(this));
             document.querySelector('#buttonSetTopic').addEventListener('click', function () {
-                this._session.sendMessage(new Metrica.Net.IrcMessage("TOPIC", [this._currentChannel.name, input.value]));
+                this._session.sendMessage(new Metrica.Net.IrcMessage("TOPIC", [this._currentChannel.name, document.querySelector('#channelTopicInput').value]));
                 hideAppBarAndFlyouts();
             }.bind(this));
         },
