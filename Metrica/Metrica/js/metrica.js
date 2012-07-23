@@ -66,6 +66,46 @@
     });
 
     /* ---------- Namespace: Metrica.Setting ---------- */
+    var Metrica_Setting_Keyword = WinJS.Class.define(function (keyword, useRegex) {
+        /// <summary>キーワードを扱うクラスです。</summary>
+        this._matcher = null;
+
+        this._useRegex = useRegex;
+        this._keyword = keyword;
+        this._updateMatcher();
+    }, {
+        /// <field name="useRegex" type="Boolean">正規表現を利用するかどうかを取得・設定します。</field>
+        useRegex: {
+            get: function () { return this._useRegex; },
+            set: function (value) {
+                this._useRegex = value;
+                this._updateMatcher();
+            }
+        },
+        /// <field name="matcher" type="RegExp">マッチさせるための正規表現を取得します。</field>
+        matcher: {
+            get: function () { return this._matcher; }
+        },
+        /// <field name="keyword" type="String">キーワードを取得・設定します。</field>
+        keyword: {
+            get: function () { return this._keyword; },
+            set: function (value) {
+                this._keyword = value;
+                this._updateMatcher();
+            }
+        },
+
+        _updateMatcher: function () {
+            if (this.useRegex) {
+                this._keyword = value;
+                this._matcher = new RegExp(value, 'i');
+            } else {
+                this._keyword = value;
+                this._matcher = new RegExp(value.replace(/([/.*+?|()\[\]{}\\])/g, "\\$1"), 'i');
+            }
+        }
+    });
+
     var Metrica_Setting_Account = WinJS.Class.define(function (accountName) {
         /// <summary>アカウント情報を扱うクラス。作成するには Metrica.Setting.Accounts.createAccount メソッドを利用してください。</summary>
         /// <param name="accountName" type="String">アカウント名</param>
@@ -216,15 +256,18 @@
             var account = this.getByName(accountName);
             var index = this._accounts.indexOf(account);
             this._accounts.splice(index, 1);
+            // TODO: 削除
             //this._deleteAccount(accountName);
         }
     };
     WinJS.Namespace.define("Metrica.Setting", {
         Account: Metrica_Setting_Account,
-        Accounts: Metrica_Setting_Accounts
+        Accounts: Metrica_Setting_Accounts,
+        Keyword: Metrica_Setting_Keyword
     });
     WinJS.Namespace.define("Metrica.Setting.Accounts", Metrica_Setting_Accounts);
     WinJS.Utilities.ready(function () { Metrica.Setting.Accounts._reload(); });
+
 
     /* ---------- Namespace: Metrica.Data ---------- */
     var Metrica_Data_Channel = WinJS.Class.define(function (id, topic, name) {
@@ -353,11 +396,17 @@
     }, {
         // instance methods
         _readLineAsync: function () {
-            this._connection.readLineAsync().then(function (line) {
-                this.dispatchEvent('messagelinereceived', { line: line });
-                //console.log(line);
-                this._readLineAsync();
-            }.bind(this));
+            this._connection.readLineAsync()
+                .then(function (line) {
+                    // onreceived
+                    this.dispatchEvent('messagelinereceived', { line: line });
+                    //console.log(line);
+                    this._readLineAsync();
+                }.bind(this), function (error) {
+                    // 読み取りエラー(回線切断など)
+                    this.disconnectAsync(); // 切断
+                    return WinJS.Promise.wrapError(error);
+                }.bind(this));
         },
         _sendUserAndPassword: function () {
             /// <summary>サーバーへユーザー情報を送信します。</summary>
