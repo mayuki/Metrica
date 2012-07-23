@@ -60,6 +60,8 @@
     <Content Include="js\metrica.js" />
     <Content Include="js\navigator.js" />
     <Content Include="pages\flyoutChannelMembers\flyoutChannelMembers.html" />
+    <Content Include="pages\flyoutChannelMembers\flyoutChannelMembers.js" />
+    <Content Include="pages\flyoutSettingConnections\flyoutSettingConnections.js" />
     <Content Include="pages\flyoutSettingConnections\flyoutSettingConnections.html" />
     <Content Include="pages\home\home.css" />
     <Content Include="pages\home\home.html" />
