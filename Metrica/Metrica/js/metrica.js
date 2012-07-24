@@ -74,6 +74,57 @@
             }
             fragment.appendChild(document.createTextNode(text.substr(start)));
             return fragment;
+        },
+        linkifyString: function (text) {
+            /// <summary>テキストのリンクをa要素とimg要素に変換してStringとして返します。</summary>
+            /// <param name="text" type="String">テキスト</param>
+            /// <returns type="String" />
+
+            var escapeHtml = Metrica.Utilities.escapeHtml;
+            var fragment = '';
+            var linkRegex = /(https?:\/\/[^ ()'""]+)/g;
+            var m, start = 0;
+            while (m = linkRegex.exec(text)) {
+                fragment += escapeHtml(text.substr(start, linkRegex.lastIndex - m[0].length - start));
+
+                // 画像置き換え
+                var imgElement;
+                if (/^http:\/\/(?:twitpic|movapic|yfrog|instagr)/.test(m[0])) {
+                    imgElement = '<img class="embedded-thumbnail"';
+                    imgElement += ' alt="' + escapeHtml(m[0]) + '" src="';
+                    if (/http:\/\/twitpic.com\/[a-zA-Z0-9_-]+(\?.*)?/.test(m[0])) {
+                        imgElement += escapeHtml(m[0].replace("http://twitpic.com/", "http://twitpic.com/show/mini/"));
+                    } else if (/http:\/\/movapic.com\/pic\/[a-zA-Z0-9_-]+/.test(m[0])) {
+                        imgElement += escapeHtml(m[0].replace(/http:\/\/movapic.com\/pic\/([a-zA-Z0-9_-]+)/, "http://image.movapic.com/pic/s_$1.jpeg"));
+                    } else if (/http:\/\/yfrog.com\/pic\/[a-zA-Z0-9_-]+/.test(m[0])) {
+                        imgElement += escapeHtml(m[0].replace(/http:\/\/yfrog.com\/([a-zA-Z0-9_-]+)/, "http://yfrog.com/s_$1.th.jpg"));
+                    } else if (/http:\/\/instagr.am\/p\/([a-zA-Z0-9_-]+).*/.test(m[0])) {
+                        imgElement += escapeHtml(m[0].replace(/http:\/\/instagr.am\/p\/([a-zA-Z0-9_-]+).*/, "http://instagr.am/p/$1/media/?size=m"));
+                    } else if (/http:\/\/gyazo.com\/([a-zA-Z0-9_-]+).*/.test(m[0])) {
+                        imgElement += escapeHtml(m[0].replace(/http:\/\/gyazo.com\/([a-zA-Z0-9_-]+).*/, "http://cache.gyazo.com/$1.png"));
+                    }
+                    imgElement += " />";
+                }
+
+                // a要素を作る
+                var aElement = '<a href="' + escapeHtml(m[0]) + '">';
+                if (imgElement) {
+                    aElement += imgElement;
+                } else {
+                    aElement += escapeHtml(m[0]);
+                }
+                aElement += '</a>';
+                fragment += aElement;
+                start = linkRegex.lastIndex;
+            }
+            fragment += escapeHtml(text.substr(start));
+            return fragment;
+        },
+        escapeHtml: function (text) {
+            /// <summary>HTMLをエスケープします。</summary>
+            /// <param name="text" type="String">テキスト</param>
+            /// <returns type="String" />
+            return text.replace(/[<>"&']/g, function ($0) { return ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos' })[$0]; });
         }
     });
 

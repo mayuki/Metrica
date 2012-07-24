@@ -196,12 +196,24 @@
             // もともとの位置が一番下の時、要素追加後に一番下までスクロールする
             var requireScroll = (this._channelLog.scrollTop == this._channelLog.scrollHeight - this._channelLog.offsetHeight); // 追加前の状態が末端の時はスクロールする
             this._channelLog.appendChild(d);
-            //d.scrollIntoView();
             if (requireScroll) {
-                this._channelLog.scrollTop = this._channelLog.scrollHeight - this._channelLog.offsetHeight;
+                this.scrollToBottom();
             }
             return WinJS.Promise.as(d);
-            //return this._channelLogItemTemplate.render(data).then(function (e) { this._channelLog.appendChild(e); e.scrollIntoView(); }.bind(this));
+        },
+        createLineHtml: function (data) {
+            var stimeFmt = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("shorttime");
+            return '<div class="templateChannelLogItem2 ' + ('message-type-' + data.type) + '">' +
+                   '<div class="channelLogViewLine">' +
+                   '<span class="time">' + Metrica.Utilities.escapeHtml(stimeFmt.format(data.time)) + '</span>' +
+                   '<span class="nickname">' + Metrica.Utilities.escapeHtml(data.nick) + '</span>' +
+                   '<span class="message">' + Metrica.Utilities.linkifyString(data.message) + '</span>' +
+                   '</div>' +
+                   '</div>';
+        },
+        scrollToBottom: function () {
+            /// <summary>ログを一番下までスクロールします。</summary>
+            this._channelLog.scrollTop = this._channelLog.scrollHeight - this._channelLog.offsetHeight;
         },
 
         updateAppBar: function () {
@@ -260,11 +272,18 @@
                     channel.isSelected = true;
 
                     // update view
-                    WinJS.Promise.join(channel.channelLog.slice(0, 200).map(function (logLine) {
-                        return this.appendLineToCurrentLogView(logLine);
-                    }.bind(this))).then(function () {
-                        this._channelLog.scrollTop = this._channelLog.scrollHeight - this._channelLog.offsetHeight;
+                    //WinJS.Promise.join(channel.channelLog.slice(0, 200).map(function (logLine) {
+                    //    return WinJS.Promise.as(true);
+                    //    //return this.appendLineToCurrentLogView(logLine);
+                    //}.bind(this))).then(function () {
+                    //    this._channelLog.scrollTop = this._channelLog.scrollHeight - this._channelLog.offsetHeight;
+                    //}.bind(this));
+                    var innerHTML = '';
+                    channel.channelLog.forEach(function (logLine) {
+                        innerHTML += this.createLineHtml(logLine);
                     }.bind(this));
+                    this._channelLog.innerHTML = innerHTML;
+                    this.scrollToBottom();
 
                     this._currentChannel = channel;
                     this._currentChannelLog = channel.channelLog;
