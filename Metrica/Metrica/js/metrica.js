@@ -986,12 +986,10 @@
 
             // キーワードチェック
             if (Metrica.Setting.Keywords.isMatch(message)) {
-                Metrica.Extension.ToastNotification.notify((channel ? channel.name + ": " : '') + args.detail.senderNick, message);
+                this.notify((channel ? channel.name + ": " : '') + args.detail.senderNick, message, channel);
             }
-        }
-    }, {
-        // static members
-        notify: function (title, body) {
+        },
+        notify: function (title, body, channel) {
             // Toast Notification
             var notificationManager = Windows.UI.Notifications.ToastNotificationManager;
             var toastTemplate = Windows.UI.Notifications.ToastTemplateType.toastText02;
@@ -1005,6 +1003,13 @@
             //toastXml.documentElement.appendChild(audioE);
 
             var toast = new Windows.UI.Notifications.ToastNotification(toastXml);
+
+            if (channel) {
+                toast.onactivated = function () {
+                    Metrica.UI.Pages.Home.Current.selectChannel(channel);
+                }.bind(this);
+            }
+
             notificationManager.createToastNotifier().show(toast);
         }
     });

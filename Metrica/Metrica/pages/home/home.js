@@ -2,6 +2,23 @@
     "use strict";
 
     WinJS.UI.Pages.define("/pages/home/home.html", {
+        _homeController: null,
+
+        // This function is called whenever a user navigates to this page. It
+        // populates the page elements with the app's data.
+        ready: function (element, options) {
+            Metrica.UI.Pages.Home.Current = new Metrica.UI.Pages.Home();
+            this._homeController = Metrica.UI.Pages.Home.Current;
+            this._homeController.ready(element, options);
+        },
+
+        updateLayout: function (element, viewState, prevViewState) {
+            this._homeController.updateLayout(element, viewState, prevViewState);
+        },
+    });
+
+    var Metrica_UI_Pages_Home = WinJS.Class.define(function () {
+    }, {
         /// <field name="_title" type="HTMLDivElement" />
         _title: null,
         /// <field name="_topicTitle" type="HTMLDivElement" />
@@ -21,12 +38,20 @@
         /// <field name="_appBar" type="WinJS.UI.AppBar" />
         _appBar: null,
 
-        // This function is called whenever a user navigates to this page. It
-        // populates the page elements with the app's data.
         ready: function (element, options) {
             this.prepareView(element, options);
             this.prepareEventHandlers(element, options);
             //this.connect();
+        },
+
+        updateLayout: function (element, viewState, prevViewState) {
+            if (this._currentChannel) {
+                if (viewState == Windows.UI.ViewManagement.ApplicationViewState.snapped) {
+                    this._title.textContent = this._currentChannel.name;
+                } else {
+                    this._title.textContent = 'Metrica';
+                }
+            }
         },
 
         prepareView: function (element, options) {
@@ -149,16 +174,6 @@
                                }.bind(this));
         },
 
-        updateLayout: function (element, viewState, prevViewState) {
-            if (this._currentChannel) {
-                if (viewState == Windows.UI.ViewManagement.ApplicationViewState.snapped) {
-                    this._title.textContent = this._currentChannel.name;
-                } else {
-                    this._title.textContent = 'Metrica';
-                }
-            }
-        },
-
         onChannelItemInvoked: function (e) {
             e.detail.itemPromise.then(function (v) {
                 this.selectChannel(v.data);
@@ -201,6 +216,7 @@
             }
             return WinJS.Promise.as(d);
         },
+
         createLineHtml: function (data) {
             var stimeFmt = new Windows.Globalization.DateTimeFormatting.DateTimeFormatter("shorttime");
             return '<div class="templateChannelLogItem2 ' + ('message-type-' + data.type) + '">' +
@@ -211,6 +227,7 @@
                    '</div>' +
                    '</div>';
         },
+
         scrollToBottom: function () {
             /// <summary>ログを一番下までスクロールします。</summary>
             this._channelLog.scrollTop = this._channelLog.scrollHeight - this._channelLog.offsetHeight;
@@ -296,5 +313,12 @@
                     return WinJS.UI.Animation.enterContent([this._topicTitle, this._channelLog]);
                 }.bind(this));
         }
+    }, {
+        // static members
+        Current: null
+    });
+
+    WinJS.Namespace.define('Metrica.UI.Pages', {
+        Home: Metrica_UI_Pages_Home
     });
 })();
