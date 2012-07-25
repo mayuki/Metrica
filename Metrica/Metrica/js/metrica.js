@@ -131,7 +131,7 @@
             /// <summary>HTMLをエスケープします。</summary>
             /// <param name="text" type="String">テキスト</param>
             /// <returns type="String" />
-            return text.replace(/[<>"&']/g, function ($0) { return ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos' })[$0]; });
+            return text.replace(/[<>"&']/g, function ($0) { return ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' })[$0]; });
         }
     });
 
