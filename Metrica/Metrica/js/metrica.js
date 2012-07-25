@@ -110,7 +110,7 @@
                     } else if (/http:\/\/gyazo.com\/([a-zA-Z0-9_-]+).*/.test(m[0])) {
                         imgElement += escapeHtml(m[0].replace(/http:\/\/gyazo.com\/([a-zA-Z0-9_-]+).*/, "http://cache.gyazo.com/$1.png"));
                     }
-                    imgElement += " />";
+                    imgElement += '" />';
                 }
 
                 // a要素を作る
