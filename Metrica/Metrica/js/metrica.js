@@ -8,6 +8,13 @@
             get: function () { return ['UTF-8', 'ISO-2022-JP', 'US-ASCII']; }
         },
 
+        removeFormatCodes: function (text) {
+            /// <summary>色指定やフォーマット指定を削除します。</summary>
+            /// <param name="text" type="String">色指定やフォーマット指定の含まれているテキスト。</param>
+            /// <returns type="String" />
+            return text.replace(/(\u0003\d+(,\d+)?|\u0002||\u0015\u0022|\u0031)/, '');
+        },
+
         forEachWinRTObject: function (enumerableObject, predicate) {
             /// <summary>WinRT オブジェクトのIEnumerableなどを手繰ります。</summary>
             /// <param name="enumerableObject" type="IEnumerable">IEnumerableを実装するオブジェクト。</param>
@@ -713,7 +720,7 @@
         /// <param name="account" type="Metrica.Setting.Account">接続先アカウント情報</param>
         this._account = account;
         this._connection = new Metrica.Net.Connection(account);
-        this._connection.addEventListener('messagelinereceived', this.onMessageLineReceived.bind(this));
+        this._connection.addEventListener('messagelinereceived', this._onMessageLineReceived.bind(this));
         this._currentNick = this._account.nick;
         this._serverChannel = new Metrica.Data.Channel('\u0000_' + this._account.id, '', this._account.serverAddress /* this._account.accountName */);
         this._serverChannel.isSpecial = true;
@@ -737,8 +744,12 @@
         this.addEventListener('receiveTopic', this._onReceiveTopic.bind(this)); // TOPIC 
         this.addEventListener('receiveJoin', this._onReceiveJoin.bind(this));
         this.addEventListener('receivePart', this._onReceivePart.bind(this));
+        this.addEventListener('receivePrivmsg', this._onReceivePrivmsg.bind(this));
         this.addEventListener('receivePrivmsg', this._onReceiveChannelMessage.bind(this));
         this.addEventListener('receiveNotice', this._onReceiveChannelMessage.bind(this));
+
+        // events
+        this.addEventListener('keywordmatched', function (args) { if (this.onkeywordmatched) this.onkeywordmatched(args); }.bind(this));
 
         // extension
         new Metrica.Extension.ToastNotification(this);
@@ -765,12 +776,8 @@
             get: function () { return this._currentNick; }
         },
 
-        onMessageLineReceived: function (arg) {
-            /// <summary>メッセージを受け取ったイベントのイベントハンドラ</summary>
-            //console.log(arg.detail.line);
-            var message = Metrica.Net.IrcMessage.createFromLine(arg.detail.line);
-            this.processMessage(message);
-        },
+        /// <field name="onkeywordmatched" type="Function">キーワードにマッチしたときに呼び出されるコールバック。</field>
+        onkeywordmatched: null,
 
         getKnownMemberByNick: function (nick) {
             /// <summary>接続しているサーバーで把握しているユーザーをニックネームで取得します。</summary>
@@ -803,6 +810,13 @@
             /// <param name="message" type="Metrica.Net.IrcMessage">IRCメッセージ</param>
             var eventName = "receive" + Metrica.Utilities.classify(message.command);
             this.dispatchEvent(eventName, message);
+        },
+
+        _onMessageLineReceived: function (arg) {
+            /// <summary>メッセージを受け取ったイベントのイベントハンドラ</summary>
+            //console.log(arg.detail.line);
+            var message = Metrica.Net.IrcMessage.createFromLine(arg.detail.line);
+            this.processMessage(message);
         },
 
         _onReceiveNick: function (args) {
@@ -869,6 +883,15 @@
         _onReceivePing: function (args) {
             this.sendMessage(new Metrica.Net.IrcMessage("PONG", [args.detail.commandParams[0]])); // [serverName]
         },
+        _onReceivePrivmsg: function (args) {
+            var channel = this.getChannel(args.detail.commandParams[0], true);
+            var text = Metrica.Utilities.removeFormatCodes(args.detail.commandParams[1]);
+
+            // キーワードチェック
+            if (Metrica.Setting.Keywords.isMatch(text)) {
+                this.dispatchEvent('keywordmatched', { channel:channel, text:text, message:args.detail });
+            }
+        },
         _onReceiveChannelMessage: function (args) {
             var channel = this.getChannel(args.detail.commandParams[0], true);
             if (channel == null) {
@@ -894,7 +917,7 @@
             switch (message.command) {
                 case 'PRIVMSG':
                 case 'NOTICE':
-                    content = message.commandParams[1].replace(/\u0003\d+(,\d+)?/, '');
+                    content = Metrica.Utilities.removeFormatCodes(message.commandParams[1]);
                     break;
                 case 'NICK':
                     content = "Nick " + message.senderNick + " -> " + message.commandParams[0];
@@ -972,22 +995,20 @@
         /// <param name="session" type="Metrica.Net.Session">セッション</param>
 
         this._session = session;
-        this._session.addEventListener('receivePrivmsg', this._onReceivePrivmsg.bind(this));
+        this._session.addEventListener('keywordmatched', this._onKeywordMatched.bind(this));
     }, {
         // instance members
         dispose: function () {
             /// <summary>処理を行うのをやめて状態を破棄します。</summary>
-            this._session.removeEventListener('receivePrivmsg', this._onReceivePrivmsg.bind(this));
+            this._session.removeEventListener('keywordmatched', this._onKeywordMatched.bind(this));
             this._session = null;
         },
-        _onReceivePrivmsg: function (args) {
-            var channel = this._session.getChannel(args.detail.commandParams[0], true);
-            var message = args.detail.commandParams[1].replace(/\u0003\d+(,\d+)?/, '');
+        _onKeywordMatched: function (args) {
+            var channel = args.detail.channel;
+            var message = args.detail.message;
 
             // キーワードチェック
-            if (Metrica.Setting.Keywords.isMatch(message)) {
-                this.notify((channel ? channel.name + ": " : '') + args.detail.senderNick, message, channel);
-            }
+            this.notify((channel ? channel.name + ": " : '') + args.detail.message.senderNick, args.detail.text, channel);
         },
         notify: function (title, body, channel) {
             // Toast Notification
