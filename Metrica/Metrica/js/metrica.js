@@ -12,7 +12,7 @@
             /// <summary>色指定やフォーマット指定を削除します。</summary>
             /// <param name="text" type="String">色指定やフォーマット指定の含まれているテキスト。</param>
             /// <returns type="String" />
-            return text.replace(/(\u0003\d+(,\d+)?|\u0002|\u0015\u0022|\u0031)/g, '');
+            return text.replace(/(\u0003\d+(,\d+)?|\u0002|\u000F\u0016|\u001F)/g, '');
         },
 
         forEachWinRTObject: function (enumerableObject, predicate) {
