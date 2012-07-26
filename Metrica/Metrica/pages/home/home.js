@@ -38,6 +38,11 @@
         /// <field name="_appBar" type="WinJS.UI.AppBar" />
         _appBar: null,
 
+        /// <field name="currentChannel" type="Metrica.Data.Channel" />
+        currentChannel: {
+            get: function () { return this._currentChannel; }
+        },
+
         ready: function (element, options) {
             this.prepareView(element, options);
             this.prepareEventHandlers(element, options);
@@ -237,9 +242,9 @@
             var isConnected = this._session && this._session.connection.isConnected;
             var selectedChannel = this._currentChannel;
             // selection commands
-            this._appBar.getCommandById('cmdSetTopic').disabled = !(isConnected && selectedChannel && !selectedChannel.isSpecial);
-            this._appBar.getCommandById('cmdPart').disabled = !(isConnected && selectedChannel && !selectedChannel.isSpecial);
-            this._appBar.getCommandById('cmdShowMembers').disabled = !(isConnected && selectedChannel && !selectedChannel.isSpecial);
+            this._appBar.getCommandById('cmdSetTopic').disabled    = !(isConnected && selectedChannel && !selectedChannel.isSpecial && selectedChannel.isJoined);
+            this._appBar.getCommandById('cmdPart').disabled        = !(isConnected && selectedChannel && !selectedChannel.isSpecial && selectedChannel.isJoined);
+            this._appBar.getCommandById('cmdShowMembers').disabled = !(isConnected && selectedChannel && !selectedChannel.isSpecial && selectedChannel.isJoined);
             // global commands
             this._appBar.getCommandById('cmdJoinNew').disabled = !(isConnected);
         },

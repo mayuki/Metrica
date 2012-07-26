@@ -6,11 +6,11 @@
         , onBeforeShowHandler: function (event) {
             Metrica.UI.Pages.ChannelMembers.flyout = this.winControl;
 
-            var homeFragment = document.querySelector('.fragment').parentElement.winControl;
+            var homeController = Metrica.UI.Pages.Home.Current;
             var membersListView = document.querySelector('#members').winControl;
             if (window.intellisense) membersListView = new WinJS.UI.ListView();
             membersListView.layout = new WinJS.UI.ListLayout();
-            membersListView.itemDataSource = homeFragment._currentChannel.members.dataSource;
+            membersListView.itemDataSource = homeController.currentChannel.members.dataSource;
             membersListView.itemTemplate = document.querySelector('#templateMembersListViewItem');
         }
         , onAfterShowHandler: function (event) {
