@@ -41,9 +41,10 @@
             }
             return s;
         },
-        linkify: function (text) {
+        linkify: function (text, disableImageExpansion) {
             /// <summary>テキストのリンクをa要素とimg要素に変換してDocumentFragmentとして返します。</summary>
             /// <param name="text" type="String">テキスト</param>
+            /// <param name="disableImageExpansion" type="Boolean">画像展開を行わないかどうか</param>
             /// <returns type="DocumentFragment" />
 
             var fragment = document.createDocumentFragment();
@@ -54,18 +55,20 @@
 
                 // 画像置き換え
                 var imgElement = document.createElement('img');
-                imgElement.alt = m[0];
-                imgElement.className = "embedded-thumbnail";
-                if (/http:\/\/twitpic.com\/[a-zA-Z0-9_-]+(\?.*)?/.test(m[0])) {
-                    imgElement.src = m[0].replace("http://twitpic.com/", "http://twitpic.com/show/mini/");
-                } else if (/http:\/\/movapic.com\/pic\/[a-zA-Z0-9_-]+/.test(m[0])) {
-                    imgElement.src = m[0].replace(/http:\/\/movapic.com\/pic\/([a-zA-Z0-9_-]+)/, "http://image.movapic.com/pic/s_$1.jpeg");
-                } else if (/http:\/\/yfrog.com\/pic\/[a-zA-Z0-9_-]+/.test(m[0])) {
-                    imgElement.src = m[0].replace(/http:\/\/yfrog.com\/([a-zA-Z0-9_-]+)/, "http://yfrog.com/s_$1.th.jpg");
-                } else if (/http:\/\/instagr.am\/p\/([a-zA-Z0-9_-]+).*/.test(m[0])) {
-                    imgElement.src = m[0].replace(/http:\/\/instagr.am\/p\/([a-zA-Z0-9_-]+).*/, "http://instagr.am/p/$1/media/?size=m");
-                } else if (/http:\/\/gyazo.com\/([a-zA-Z0-9_-]+).*/.test(m[0])) {
-                    imgElement.src = m[0].replace(/http:\/\/gyazo.com\/([a-zA-Z0-9_-]+).*/, "http://cache.gyazo.com/$1.png");
+                if (!disableImageExpansion) {
+                    imgElement.alt = m[0];
+                    imgElement.className = "embedded-thumbnail";
+                    if (/http:\/\/twitpic.com\/[a-zA-Z0-9_-]+(\?.*)?/.test(m[0])) {
+                        imgElement.src = m[0].replace("http://twitpic.com/", "http://twitpic.com/show/mini/");
+                    } else if (/http:\/\/movapic.com\/pic\/[a-zA-Z0-9_-]+/.test(m[0])) {
+                        imgElement.src = m[0].replace(/http:\/\/movapic.com\/pic\/([a-zA-Z0-9_-]+)/, "http://image.movapic.com/pic/s_$1.jpeg");
+                    } else if (/http:\/\/yfrog.com\/pic\/[a-zA-Z0-9_-]+/.test(m[0])) {
+                        imgElement.src = m[0].replace(/http:\/\/yfrog.com\/([a-zA-Z0-9_-]+)/, "http://yfrog.com/s_$1.th.jpg");
+                    } else if (/http:\/\/instagr.am\/p\/([a-zA-Z0-9_-]+).*/.test(m[0])) {
+                        imgElement.src = m[0].replace(/http:\/\/instagr.am\/p\/([a-zA-Z0-9_-]+).*/, "http://instagr.am/p/$1/media/?size=m");
+                    } else if (/http:\/\/gyazo.com\/([a-zA-Z0-9_-]+).*/.test(m[0])) {
+                        imgElement.src = m[0].replace(/http:\/\/gyazo.com\/([a-zA-Z0-9_-]+).*/, "http://cache.gyazo.com/$1.png");
+                    }
                 }
 
                 // a要素を作る
@@ -82,9 +85,10 @@
             fragment.appendChild(document.createTextNode(text.substr(start)));
             return fragment;
         },
-        linkifyString: function (text) {
+        linkifyString: function (text, disableImageExpansion) {
             /// <summary>テキストのリンクをa要素とimg要素に変換してStringとして返します。</summary>
             /// <param name="text" type="String">テキスト</param>
+            /// <param name="disableImageExpansion" type="Boolean">画像展開を行わないかどうか</param>
             /// <returns type="String" />
 
             var escapeHtml = Metrica.Utilities.escapeHtml;
@@ -96,7 +100,7 @@
 
                 // 画像置き換え
                 var imgElement;
-                if (/^http:\/\/(?:twitpic|movapic|yfrog|instagr)/.test(m[0])) {
+                if (!disableImageExpansion && /^http:\/\/(?:twitpic|movapic|yfrog|instagr)/.test(m[0])) {
                     imgElement = '<img class="embedded-thumbnail"';
                     imgElement += ' alt="' + escapeHtml(m[0]) + '" src="';
                     if (/http:\/\/twitpic.com\/[a-zA-Z0-9_-]+(\?.*)?/.test(m[0])) {
