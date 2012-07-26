@@ -47,7 +47,7 @@
             /// <returns type="DocumentFragment" />
 
             var fragment = document.createDocumentFragment();
-            var linkRegex = /(https?:\/\/[^ ()'""]+)/g;
+            var linkRegex = /(https?:\/\/[a-zA-Z0-9-.:]+(?:\/[^ ()'""]+)?)/g;
             var m, start = 0;
             while (m = linkRegex.exec(text)) {
                 fragment.appendChild(document.createTextNode(text.substr(start, linkRegex.lastIndex - m[0].length - start)));
@@ -89,7 +89,7 @@
 
             var escapeHtml = Metrica.Utilities.escapeHtml;
             var fragment = '';
-            var linkRegex = /(https?:\/\/[^ ()'""]+)/g;
+            var linkRegex = /(https?:\/\/[a-zA-Z0-9-.:]+(?:\/[^ ()'""]+)?)/g;
             var m, start = 0;
             while (m = linkRegex.exec(text)) {
                 fragment += escapeHtml(text.substr(start, linkRegex.lastIndex - m[0].length - start));
