@@ -223,7 +223,7 @@
                    '<div class="channelLogViewLine">' +
                    '<span class="time">' + Metrica.Utilities.escapeHtml(stimeFmt.format(data.time)) + '</span>' +
                    '<span class="nickname">' + Metrica.Utilities.escapeHtml(data.nick) + '</span>' +
-                   '<span class="message">' + Metrica.Utilities.linkifyString(data.message) + '</span>' +
+                   '<span class="message">' + Metrica.Utilities.linkifyHtml(data.message) + '</span>' +
                    '</div>' +
                    '</div>';
         },

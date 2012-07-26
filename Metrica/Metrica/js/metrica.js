@@ -85,7 +85,7 @@
             fragment.appendChild(document.createTextNode(text.substr(start)));
             return fragment;
         },
-        linkifyString: function (text, disableImageExpansion) {
+        linkifyHtml: function (text, disableImageExpansion) {
             /// <summary>テキストのリンクをa要素とimg要素に変換してStringとして返します。</summary>
             /// <param name="text" type="String">テキスト</param>
             /// <param name="disableImageExpansion" type="Boolean">画像展開を行わないかどうか</param>
