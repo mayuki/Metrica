@@ -71,10 +71,10 @@
     <None Include="Metrica_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <SDKReference Include="Microsoft.WinJS.1.0.RC, Version=1.0" />
+    <ProjectReference Include="..\MetricaConnectionHelper\MetricaConnectionHelper.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MetricaConnectionHelper\MetricaConnectionHelper.csproj" />
+    <SDKReference Include="Microsoft.WinJS.1.0, Version=1.0" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\$(WMSJSProjectDirectory)\Microsoft.VisualStudio.$(WMSJSProject).targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
