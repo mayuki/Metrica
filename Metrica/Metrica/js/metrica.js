@@ -307,7 +307,6 @@
             });
         }
     });
-    WinJS.Binding.define
     WinJS.Class.mix(Metrica_Setting_Account,
         WinJS.Binding.mixin,
         WinJS.Binding.expandProperties({ accountName: '', serverAddress: '', port: 0, encoding: '', nick: '', username: '', realname: '', password: '' })

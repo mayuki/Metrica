@@ -2,18 +2,22 @@
     width: 100%;
     height: 100%;
     display: -ms-grid;
-    -ms-grid-columns: 360px 80px 1fr 40px;
+    -ms-grid-columns: 360px 40px 1fr 40px;
     -ms-grid-rows: 1fr;
 }
 
 .homepage header[role="banner"] .chevron {
     display: none;
 }
+.homepage header[role="banner"] .titlearea {
+	display: none;
+}
 .homepage .win-appbar {
     background-color: rgb(46, 117, 182);
 }
 .homepage #channelsPanel {
     -ms-grid-column: 1;
+	margin-top: -108px;
 }
 .homepage #channelsPanel h2 {
     padding-left: 120px;
@@ -24,6 +28,7 @@
 .homepage #channelsPanel #channels .win-container {
     margin-left: 0;
     margin-right: 0;
+	background-color: transparent;
 }
 .homepage #channelsPanel #channels .win-container:hover {
     outline-style: none;
@@ -75,7 +80,8 @@
     -ms-grid-columns: 1fr;
     -ms-grid-rows: 115fr 20px 13fr;
     width: 100%;
-    height: 100%;
+    height: calc(100% + 108px);
+	margin-top: -108px;
 }
 .homepage #channelLogPanel #channelLogViewArea h2 {
     -ms-text-overflow: ellipsis;
@@ -154,6 +160,13 @@
  * Snapped View State
  */
 @media screen and (-ms-view-state: snapped) {
+    .homepage {
+		-ms-grid-rows: 64px 1fr 0px;
+	}
+    .homepage header[role="banner"] .titlearea {
+		margin-top: 20px;
+		display: block;
+	}
     .homepage header[role="banner"] .chevron {
         display: inline;
     }
@@ -165,7 +178,9 @@
     }
     .homepage #channelLogPanel {
         width: calc(100% - 40px);
+		height: calc(100%);
         padding-left: 20px;
+		margin-top: 0;
     }
     .homepage .channelLogView .channelLogViewLine {
         display: block;
