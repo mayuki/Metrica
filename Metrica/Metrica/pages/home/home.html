@@ -28,7 +28,7 @@
 
                 Metrica.Data.Dummy.channels.getAt(0).unreadCount = 10;
                 Metrica.Data.Dummy.channels.getAt(0).isSelected = true;
-                //return;
+                return;
                 var c = 0;
                 setInterval(function () {
                     c++;
@@ -56,25 +56,22 @@
             </h1>
         </header>
         <section aria-label="Main content" role="main">
-            <div style="position:absolute;width:360px;height:100%; top:0; left:0; z-index:-1; background-color:#f0f0f0;"></div>
             <div id="panelsContainer">
-                <section id="channelsPanel" aria-label="Channels">
-                    <h2>Channels</h2>
-                    <div style="width:240px; height:10px; background-color:#f0f0f0;"></div>
-            	    <div id="channels" data-win-control="WinJS.UI.ListView" data-win-options="{ selectionMode: 'none' }"></div>
-                    <div id="templateChannelListViewItem" data-win-control="WinJS.Binding.Template">
-                        <div data-win-bind="className: htmlClassName valueToString">
-                            <div class="listViewItemChannel">
-                                <span class="channel-name" data-win-bind="textContent: name">#ChannelName</span>
-                                <span class="channel-unread-count" data-win-bind="textContent: unreadCount unreadCountIfHasUnread">0</span>
+            	<section id="channelsPanel" aria-label="Channels">
+            		<h2>Channels</h2>
+            		<div style="width:240px; height:10px; background-color:#f0f0f0;"></div>
+            		<div id="channels" data-win-control="WinJS.UI.ListView" data-win-options="{selectionMode:'none'}"></div>
+            		<div id="templateChannelListViewItem" data-win-control="WinJS.Binding.Template">
+            			<div data-win-bind="className:htmlClassName valueToString">
+            				<div class="listViewItemChannel"><span class="channel-name" data-win-bind="textContent:name">#ChannelName</span><span class="channel-unread-count" data-win-bind="textContent:unreadCount unreadCountIfHasUnread">0</span>
                                 <!--
                                 <span data-win-bind="textContent: htmlClassName Metrica.Converter.valueToString">#ChannelName</span>
                                 <span data-win-bind="textContent: isSelected Metrica.Converter.valueToString">#ChannelName</span>
                                 -->
-                            </div>
-                        </div>
-                    </div>
-                </section>
+            				</div>
+            			</div>
+            		</div>
+            	</section>
                 <section id="channelLogPanel" aria-label="Log">
                     <div id="channelLogViewArea">
                         <h2>Topic: <span id="topicTitle">[Channel Topic]</span></h2>
@@ -88,7 +85,8 @@
                             </div>
                         </div>
                         -->
-                        <div id="channelLog" class="channelLogView"></div>
+                        <div id="channelLog" class="channelLogView">							
+						</div>
                         <div class="templateChannelLogItem" data-win-control="WinJS.Binding.Template">
                             <div class="channelLogViewLine">
                                 <span class="time" data-win-bind="textContent: time">00:00</span>

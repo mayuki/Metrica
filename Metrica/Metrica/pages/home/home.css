@@ -2,8 +2,21 @@
     width: 100%;
     height: 100%;
     display: -ms-grid;
-    -ms-grid-columns: 360px 40px 1fr 40px;
+    -ms-grid-columns: 280px 40px 1fr 40px;
     -ms-grid-rows: 1fr;
+}
+.homepage #panelsContainer:before {
+	width: 280px;
+	height: 100%;
+
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: -1;
+	background-color: #f0f0f0;
+	
+	content: '';
+	display: block;
 }
 
 .homepage header[role="banner"] .chevron {
@@ -17,10 +30,10 @@
 }
 .homepage #channelsPanel {
     -ms-grid-column: 1;
-	margin-top: -108px;
+	margin-top: -95px;
 }
 .homepage #channelsPanel h2 {
-    padding-left: 120px;
+    padding-left: 20px;
 }
 .homepage #channelsPanel #channels {
     height: calc(100% - 70px);
@@ -48,15 +61,18 @@
 
 .homepage #channelsPanel #channels .listViewItemChannel {
     padding: 0.5em;
-    padding-left: 140px;
+    padding-left: 60px;
     display: -ms-grid;
     -ms-grid-columns: 178fr 40px 5px;
 }
 .homepage #channelsPanel #channels .is-special .listViewItemChannel {
-    padding-left: 120px;
+    padding-left: 40px;
 }
 .homepage #channelsPanel #channels .has-unread .listViewItemChannel {
     font-weight: bold;
+}
+.homepage #channelsPanel #channels .listViewItemChannel:hover {
+    background-color: #c4d6e7;
 }
 .homepage #channelsPanel #channels .is-selected .listViewItemChannel {
     background-color: rgb(46, 117, 182);
@@ -78,10 +94,10 @@
     
     display: -ms-grid;
     -ms-grid-columns: 1fr;
-    -ms-grid-rows: 115fr 20px 13fr;
+    -ms-grid-rows: 326fr 0px 21fr 20px;
     width: 100%;
-    height: calc(100% + 108px);
-	margin-top: -108px;
+    height: calc(100% + 95px);
+	margin-top: -95px;
 }
 .homepage #channelLogPanel #channelLogViewArea h2 {
     -ms-text-overflow: ellipsis;
@@ -125,7 +141,7 @@
 }
 .homepage .channelLogView .channelLogViewLine {
     display: -ms-grid;
-    -ms-grid-columns: 40px 20px 95px 20px auto;
+    -ms-grid-columns: 60px 5px 95px 5px auto;
     margin-bottom: 5px;
 }
 .homepage .channelLogView .message-type-NOTICE .channelLogViewLine {
@@ -173,6 +189,9 @@
     .homepage #panelsContainer {
         display: block;
     }
+	.homepage #panelsContainer:before {
+		display: none;
+	}
     .homepage #channelsPanel {
         display: none;
     }
