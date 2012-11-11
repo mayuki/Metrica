@@ -56,6 +56,7 @@
                 } else {
                     this._title.textContent = 'Metrica';
                 }
+                this.scrollToBottom(); // 高さが変わるときは一番下にスクロールする
             }
         },
 
