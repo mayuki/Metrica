@@ -60,6 +60,7 @@
     <Content Include="js\default.js" />
     <Content Include="js\dummyData.js" />
     <Content Include="js\metrica.js" />
+    <Content Include="js\metrica.utilities.js" />
     <Content Include="js\navigator.js" />
     <Content Include="pages\flyoutChannelMembers\flyoutChannelMembers.html" />
     <Content Include="pages\flyoutChannelMembers\flyoutChannelMembers.js" />
